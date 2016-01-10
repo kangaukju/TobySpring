@@ -11,14 +11,9 @@
 		<property name="username" value="kinow" />
 		<property name="password" value="830421" />
 	</bean>
-	<bean id="jdbcContext" class="com.naver.kinow.dao.JdbcContext">
-		<property name="dataSource" ref="dataSource"/>
-	</bean>
-	
-	<bean id="userDao" class="com.naver.kinow.dao.UserDao">
-		<!--  <property name="connectionMaker" ref="naverConnectionMaker"/> -->
+
+	<bean id="userDao" class="spring.learning.jdbcTemplete.UserDao">
 		 <property name="dataSource" ref="dataSource"/>
-		 <!-- <property name="jdbcContext" ref="jdbcContext"/> -->
 	</bean>
 
 </beans>
