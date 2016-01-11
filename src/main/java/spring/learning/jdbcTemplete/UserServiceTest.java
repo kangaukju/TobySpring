@@ -39,6 +39,22 @@ public class UserServiceTest {
 	}
 	
 	@Test
+	public void add() {
+		User userWithLevel = users.get(4);
+		User userWithoutLevel = users.get(0);
+		userWithoutLevel.setLevel(null);
+		
+		userService.add(userWithLevel);
+		userService.add(userWithoutLevel);
+		
+		User userWithLevelRead = userDao.get(userWithLevel.getId());
+		User userWithoutLevelRead = userDao.get(userWithoutLevel.getId());
+		
+		assertThat(userWithLevelRead.getLevel(), is(userWithLevel.getLevel()));
+		assertThat(userWithoutLevelRead.getLevel(), is(Level.BASIC));
+	}
+	
+	@Test
 	public void bean() {
 		assertThat(this.userService, is(notNullValue()));
 	}
@@ -51,16 +67,32 @@ public class UserServiceTest {
 		
 		userService.upgradeLevels();
 		
+		/*
 		checkLevel(users.get(0).getId(), Level.BASIC);
 		checkLevel(users.get(1).getId(), Level.SILVER);
 		checkLevel(users.get(2).getId(), Level.SILVER);
 		checkLevel(users.get(3).getId(), Level.GOLD);
 		checkLevel(users.get(4).getId(), Level.GOLD);
+		*/
+		checkLevelUpgrade(users.get(0), false);
+		checkLevelUpgrade(users.get(1), true);
+		checkLevelUpgrade(users.get(2), false);
+		checkLevelUpgrade(users.get(3), true);
+		checkLevelUpgrade(users.get(4), false);
 	}
 	
 	private void checkLevel(String userId, Level expectedLevel) {
 		User user = userDao.get(userId);
 		assertThat(user.getLevel(), is(expectedLevel));
+	}
+	
+	private void checkLevelUpgrade(User user, boolean upgrade) {
+		User userUpdate = userDao.get(user.getId());
+		if (upgrade) {
+			assertThat(userUpdate.getLevel(), is(user.getLevel().nextLevel()));
+		} else {
+			assertThat(userUpdate.getLevel(), is(user.getLevel()));
+		}
 	}
 	
 }

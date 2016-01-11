@@ -4,6 +4,18 @@ public class User {
 	String id;
 	String name;
 	String password;
+	Level level;
+	int login;
+	int recommend;
+	
+	public void upgradeLevel() {
+		Level nextLevel = level.nextLevel();
+		if (nextLevel == null) {
+			throw new IllegalStateException(level + "은 업그레이드가 불가능합니다.");
+		} else {
+			level = nextLevel;
+		}
+	}
 	
 	public Level getLevel() {
 		return level;
@@ -22,11 +34,7 @@ public class User {
 	}
 	public void setRecommend(int recommend) {
 		this.recommend = recommend;
-	}
-	Level level;
-	int login;
-	int recommend;
-	
+	}	
 	public String getId() {
 		return id;
 	}
