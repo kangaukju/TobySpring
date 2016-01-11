@@ -4,6 +4,29 @@ public class User {
 	String id;
 	String name;
 	String password;
+	
+	public Level getLevel() {
+		return level;
+	}
+	public void setLevel(Level level) {
+		this.level = level;
+	}
+	public int getLogin() {
+		return login;
+	}
+	public void setLogin(int login) {
+		this.login = login;
+	}
+	public int getRecommend() {
+		return recommend;
+	}
+	public void setRecommend(int recommend) {
+		this.recommend = recommend;
+	}
+	Level level;
+	int login;
+	int recommend;
+	
 	public String getId() {
 		return id;
 	}
@@ -24,15 +47,20 @@ public class User {
 	}
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", password=" + password + "]";
-	}
-	public User(String id, String name, String password) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.password = password;
+		return "User [id=" + id + ", name=" + name + ", password=" + password + ", level=" + level + ", login=" + login
+				+ ", recommend=" + recommend + "]";
 	}
 	public User() {
 		
 	}
+	public User(String id, String name, String password, Level level, int login, int recommend) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.password = password;
+		this.level = level;
+		this.login = login;
+		this.recommend = recommend;
+	}
+	
 }
