@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+	
+	<bean id="naverConnectionMaker" class="com.naver.kinow.dao.NaverConnectionMaker"/>
+	<bean id="localConnectionMaker" class="com.naver.kinow.dao.LocalConnectionMaker"/>
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost/spring" />
+		<property name="username" value="kinow" />
+		<property name="password" value="830421" />
+	</bean>
+
+	<!--<bean id="commonUserLevelUpgradePolicy" class="com.naver.kinow.user.CommonUserLevelUpgradePolicy" /> -->
+	<bean id="newYearUserLevelUpgradePolicy" class="com.naver.kinow.user.NewYearUserLevelUpgradePolicy" />
+
+	<bean id="userDao" class="spring.learning.jdbcTemplete.UserDaoJdbc">
+		 <property name="dataSource" ref="dataSource"/>
+	</bean>
+				
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="userService" class="spring.learning.service.UserServiceImpl">
+		<property name="userDao" ref="userDao" />
+		<property name="userLevelUpgradePolicy" ref="newYearUserLevelUpgradePolicy" />
+		<property name="transactionManager" ref="transactionManager"/>
+	</bean>
+	
+	<util:properties id="mailServerInfo">
+		<prop key="mail.smtp.host">smtp.gmail.com</prop>
+		<prop key="mail.smtp.user">kinow@unet.kr</prop>
+		<prop key="mail.smtp.starttls.enable">true</prop>
+		<prop key="mail.smtp.auth">true</prop>
+		<prop key="mail.smtp.debug">true</prop>
+		<prop key="mail.smtp.socketFactory.port">465</prop>
+		<prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+		<prop key="mail.smtp.socketFactory.fallback">false</prop>
+	</util:properties>
+	
+	<!--  
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="javaMailProperties" ref="mailServerInfo" />
+		<property name="password" value="rphyweqzmetlksce" />
+	</bean>
+	-->
+	
+	<bean id="mailSender" class="spring.learning.service.DummyMailServer" />
+		
+
+</beans>

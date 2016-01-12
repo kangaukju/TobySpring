@@ -40,9 +40,9 @@ public class UserDaoTest {
 	
 	@Before
 	public void setUp() {
-		user1 = new User("kinow1", "kangsukju1", "1234", Level.BASIC, 1, 0);
-		user2 = new User("kinow2", "kangsukju2", "5678", Level.SILVER, 55, 10);
-		user3 = new User("kinow3", "kangsukju3", "9012", Level.GOLD, 100, 40);
+		user1 = new User("kinow1", "kangsukju1", "1234", Level.BASIC, 1, 0, null);
+		user2 = new User("kinow2", "kangsukju2", "5678", Level.SILVER, 55, 10, null);
+		user3 = new User("kinow3", "kangsukju3", "9012", Level.GOLD, 100, 40, null);
 		
 		dao.deleteAll();
 		assertThat(dao.getCount(), is(0));
@@ -108,7 +108,7 @@ public class UserDaoTest {
 	
 	@Test
 	public void addAndGet() {
-		User user = new User("kaka", "kinow", "qwe123", Level.BASIC, 1, 0);
+		User user = new User("kaka", "kinow", "qwe123", Level.BASIC, 1, 0, null);
 		dao.add(user);
 		
 		User user2 = dao.get(user.getId());
