@@ -14,47 +14,45 @@
 		<property name="password" value="830421" />
 	</bean>
 
-	<!--<bean id="commonUserLevelUpgradePolicy" class="com.naver.kinow.user.CommonUserLevelUpgradePolicy" /> -->
+	<bean id="commonUserLevelUpgradePolicy" class="com.naver.kinow.user.CommonUserLevelUpgradePolicy" />
 	<bean id="newYearUserLevelUpgradePolicy" class="com.naver.kinow.user.NewYearUserLevelUpgradePolicy" />
 
+	<!-- DAO -->
 	<bean id="userDao" class="spring.learning.jdbcTemplete.UserDaoJdbc">
 		 <property name="dataSource" ref="dataSource"/>
 	</bean>
 				
+	<!-- TransactionManager of DataSource -->
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 	
+	<!-- Target of UserService -->
 	<bean id="userServiceImpl" class="spring.learning.service.UserServiceImpl">
 		<property name="userDao" ref="userDao" />
 		<property name="userLevelUpgradePolicy" ref="newYearUserLevelUpgradePolicy" />
 		<property name="mailSender" ref="mailSender" />
 	</bean>
 	
-	<bean id="userService" class="spring.learning.service.UserServiceTx">
-		<property name="transactionManager" ref="transactionManager" />
-		<property name="userService" ref="userServiceImpl" />
+	<!-- Target of UserService -->
+	<bean id="testUserServiceImpl" class="spring.learning.service.TestUserService">
+		<constructor-arg>
+			<value>kinow3</value>
+		</constructor-arg>
+		<property name="userDao" ref="userDao" />
+		<property name="userLevelUpgradePolicy" ref="newYearUserLevelUpgradePolicy" />
+		<property name="mailSender" ref="mailSender" />
 	</bean>
 	
-	<util:properties id="mailServerInfo">
-		<prop key="mail.smtp.host">smtp.gmail.com</prop>
-		<prop key="mail.smtp.user">kinow@unet.kr</prop>
-		<prop key="mail.smtp.starttls.enable">true</prop>
-		<prop key="mail.smtp.auth">true</prop>
-		<prop key="mail.smtp.debug">true</prop>
-		<prop key="mail.smtp.socketFactory.port">465</prop>
-		<prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
-		<prop key="mail.smtp.socketFactory.fallback">false</prop>
-	</util:properties>
-	
-	<!--  
-	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="javaMailProperties" ref="mailServerInfo" />
-		<property name="password" value="rphyweqzmetlksce" />
-	</bean>
-	-->
-	
+	<!-- mail sender -->
 	<bean id="mailSender" class="spring.learning.service.MockMailServer" />
-		
+	
+	<!-- Transaction Factory Bean -->
+	<bean id="userService" class="spring.learning.proxy.TransactionHandlerFactoryBean">
+		<property name="pattern"            value="upgradeLevels" />
+		<property name="serviceInterface"   value="spring.learning.service.UserService" />
+		<property name="target"             ref="testUserServiceImpl" />
+		<property name="transactionManager" ref="transactionManager" />
+	</bean>
 
 </beans>

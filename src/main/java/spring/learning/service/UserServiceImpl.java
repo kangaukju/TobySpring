@@ -18,6 +18,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.naver.kinow.user.CommonUserLevelUpgradePolicy;
 import com.naver.kinow.user.Level;
 import com.naver.kinow.user.User;
 import com.naver.kinow.user.UserLevelUpgradePolicy;
@@ -114,13 +115,16 @@ public class UserServiceImpl implements UserService {
 	*/
 	
 	public void upgradeLevels() {
+		if (userLevelUpgradePolicy == null) {
+			userLevelUpgradePolicy = new CommonUserLevelUpgradePolicy();
+		}
+		
 		Level prevLevel;
 		List<User> users = userDao.getAll();
-		for (User user : users) {
+		for (User user : users) {			
 			if (userLevelUpgradePolicy.canUpgradeLevel(user)) {
 				prevLevel = user.getLevel();	
 				upgradeLevel(user);
-				System.out.println("[upgrade user] "+user.getId() + "level: "+prevLevel.name()+"->"+user.getLevel().name());
 			}
 		}	
 	}

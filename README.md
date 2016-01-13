@@ -48,3 +48,17 @@
   - DAO를 사용하는 비즈니스 로직에는 단위 작업을 보장해주는 트랜잭션이 필요하다.
   - 트랜잭션 경계설정은 주로 비즈니스 로직 안에서 일어난다.
   - 트랜잭션 방법에 따라 비즈니스 로직을 담은 코드가 함께 변경되면 단일 책임 원칙에 위배되며, DAO가 사용하는 특정 기술에 대해 강한 결합을 만들어낸다.
+  
+> [AOP]
+- 팩토리 빈이란? 스프링을 대신해서 오브젝트의 생성로직을 담당하도록 만들어진 특별한 빈을 말함.
+```
+package org.springframework.beans.factory;
+public interface FactoryBean {
+    public abstract Object getObject() throws Exception;
+    public abstract Class getObjectType();
+    public abstract boolean isSingleton();
+}
+``` 
+ * 리플렉션은 private으로 선언된 접근 규약을 위반할 수 있는 강력한 기능을 가짐.(private 생성자를 가진 클래스도 오브젝트를 만들어준다.)
+FactoryBean 인터페이스를 구현한 클래스를 스프링의 빈으로 등록하면 팩토린 빈으로 동작한다.
+ * context.getBean(&[name of ID]) ?? 팩토리 빈이 만들어주는 빈 오브젝트가 아닌 팩토리 빈 자체를 가져온다 (빈 이름 앞에 '&' 사용)
