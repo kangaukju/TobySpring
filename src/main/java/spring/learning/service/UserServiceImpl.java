@@ -28,18 +28,18 @@ import spring.learning.jdbcTemplete.UserDao;
 public class UserServiceImpl implements UserService {
 	private UserDao userDao; // DAO DI
 	private UserLevelUpgradePolicy userLevelUpgradePolicy; // Upgrade Policy DI
-	private PlatformTransactionManager transactionManager; // Transaction DI
+//	private PlatformTransactionManager transactionManager; // Transaction DI
 	private MailSender mailSender; // java mail DI
 	
 	
 	public void setMailSender(MailSender mailSender) {
 		this.mailSender = mailSender;
 	}
-
+/*
 	public void setTransactionManager(PlatformTransactionManager transactionManager) {
 		this.transactionManager = transactionManager;
 	}
-
+*/
 	public void setUserLevelUpgradePolicy(UserLevelUpgradePolicy userLevelUpgradePolicy) {
 		this.userLevelUpgradePolicy = userLevelUpgradePolicy;
 	}

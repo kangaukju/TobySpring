@@ -2,7 +2,9 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:util="http://www.springframework.org/schema/util"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 	
 	<bean id="naverConnectionMaker" class="com.naver.kinow.dao.NaverConnectionMaker"/>
@@ -51,8 +53,47 @@
 	<bean id="userService" class="spring.learning.proxy.TransactionHandlerFactoryBean">
 		<property name="pattern"            value="upgradeLevels" />
 		<property name="serviceInterface"   value="spring.learning.service.UserService" />
-		<property name="target"             ref="testUserServiceImpl" />
+		<property name="target"             ref="userServiceSec" />
 		<property name="transactionManager" ref="transactionManager" />
 	</bean>
+	
+	<bean id="userServiceSec" class="spring.learning.proxy.SecurityHandlerFactoryBean">
+		<property name="pattern"            value="upgradeLevels" />
+		<property name="serviceInterface"   value="spring.learning.service.UserService" />
+		<property name="target"             ref="testUserServiceImpl" />
+	</bean>
 
+
+	<bean id="transactionAdvice" class="spring.learning.proxy.TransactionAdvice">
+		<property name="transactionManager" ref="transactionManager" />
+	</bean>
+	<bean id="transactionPointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">
+		<property name="mappedName" value="upgrade*"></property>
+	</bean>
+	<bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+		<property name="pointcut" ref="transactionPointcut" />
+		<property name="advice" ref="transactionAdvice" />
+	</bean>
+	<bean id="userServiceFactoryBean" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="testUserServiceImpl" />
+		<!-- 
+			advice 와 advisor를 동시에 설정해 줄 수 있는 프로퍼티.
+			리스트에 advice 나 advisor의 Bean 아이디를 값으로 넣어주면 된다.
+			기존의 ref 애트리뷰트를 사용하는 DI와는 방식이 다름에 주의해야 한다.
+		-->
+		<property name="interceptorNames">
+			<list>
+				<value>transactionAdvisor</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- ID가 없다. 다른 빈에서 참조되거나 코드에서 빈 이름으로 조회될 필요가 없는 Bean이라면 아이디를 등록하지 않아도 된다. -->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+	
+	<bean id="transactionClassMethodPointcut" 
+			class="spring.learning.proxy.NameMatchClassMethodPointcut">
+			<property name="mappedClassName" value="*ServiceImpl" />
+			<property name="mappedName" value="upgrade*" />
+	</bean>
 </beans>

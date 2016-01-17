@@ -15,6 +15,15 @@
 		<level value="info" />
 	</logger>
 	
+	<logger name="spring.learning.service">
+		<level value="info" />
+	</logger>
+	
+	<logger name="org.springframework.aop.framework">
+		<level value="trace" />
+	</logger>
+	
+	
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
 		<level value="info" />

@@ -37,6 +37,8 @@ public class TransactionHandler implements InvocationHandler {
 	}
 	
 	private Object invokeInTransaction(Method method, Object[] args) throws Throwable {
+		System.out.println("!!! [Start Transaction] !!!");
+		
 		TransactionStatus status = transactionManager
 				.getTransaction(new DefaultTransactionDefinition());
 		
@@ -44,10 +46,12 @@ public class TransactionHandler implements InvocationHandler {
 
 			Object ret = method.invoke(target, args);
 			transactionManager.commit(status);
+			System.out.println("!!! [End Transaction - ok] !!!");
 			return ret;
 			
 		} catch (InvocationTargetException e) {
 			transactionManager.rollback(status);
+			System.out.println("!!! [End Transaction - occur exception] !!!");
 			throw e.getTargetException();
 		}
 	}
